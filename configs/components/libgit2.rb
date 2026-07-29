@@ -23,6 +23,10 @@ component 'libgit2' do |pkg, settings, platform|
   # USE_SSH=ON is the whole point — without it rugged links a libgit2 that
   # cannot speak SSH, which is silently useless for private control repos.
   # CMAKE_PREFIX_PATH points cmake at our just-built libssh2.
+  #
+  # USE_NTLMCLIENT=OFF: libgit2's bundled NTLM client needs MD4, which the
+  # vendored OpenSSL is built without (legacy algo, like curl's ntlm module).
+  # r10k never uses NTLM git auth, so disable it.
   pkg.configure do
     ["cmake -S . -B build " \
      "-DCMAKE_INSTALL_PREFIX=#{settings[:prefix]} " \
@@ -30,8 +34,6 @@ component 'libgit2' do |pkg, settings, platform|
      "-DCMAKE_PREFIX_PATH=#{settings[:prefix]} " \
      "-DUSE_SSH=ON " \
      "-DUSE_HTTPS=OpenSSL " \
-     # NTLM needs MD4, which the vendored OpenSSL is built without (legacy algo).
-     # r10k never uses NTLM git auth, so disable the bundled ntlmclient.
      "-DUSE_NTLMCLIENT=OFF " \
      "-DOPENSSL_ROOT_DIR=#{settings[:prefix]} " \
      "-DBUILD_SHARED_LIBS=ON " \
