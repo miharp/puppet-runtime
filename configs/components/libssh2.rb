@@ -2,14 +2,15 @@
 # libssh2 — SSH transport for libgit2, so rugged can reach SSH git remotes.
 # Component release information: https://github.com/libssh2/libssh2/releases
 #
-# NOTE: this is the FIRST CMake-based component in puppet-runtime (curl, openssl
-# etc. are autotools). The build host must therefore have `cmake` available —
-# add it as a build package in the platform files, or as a build_requires, when
-# wiring this into a runtime project.
+# NOTE: this is the first CMake-based component here (curl, openssl etc. are
+# autotools), so it build-requires cmake — vanagon installs that OS package on
+# the builder, the same way other components pull rustc or perl-core.
 #####
 component 'libssh2' do |pkg, settings, platform|
   pkg.load_from_json('configs/components/libssh2.json')
   pkg.mirror "#{settings[:buildsources_url]}/libssh2-#{pkg.get_version}.tar.gz"
+
+  pkg.build_requires 'cmake'   # OS package; el/debian all ship cmake >= 3.20
 
   # Reuse the runtime's OpenSSL rather than vendoring a second crypto stack —
   # the same one curl links.
