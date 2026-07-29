@@ -110,4 +110,17 @@ project 'r10k-runtime' do |proj|
   proj.component 'rubygem-semantic_puppet'
   proj.component 'rubygem-text'
   proj.component 'rubygem-r10k'
+
+  # Directories to pack into the runtime archive. WITHOUT these, vanagon only
+  # captures explicitly-declared files (not the compiled trees), producing an
+  # almost-empty tarball. Mirrors openbolt-runtime.
+  proj.directory proj.prefix
+  proj.directory proj.libdir
+  proj.directory proj.includedir
+  proj.directory proj.datadir
+  proj.directory proj.mandir
+  proj.directory proj.ruby_dir_base
+  proj.directory proj.ruby_dir_base_version
+  proj.directory proj.rubygems_dir
+  proj.directory proj.rubygems_ssl_dir
 end
