@@ -17,6 +17,7 @@ on:
           - agent-runtime-main
           - agent-runtime-8.x
           - openbolt-runtime
+          - r10k-runtime
         default: 'agent-runtime-main'
       branch:
         description: >-
