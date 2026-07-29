@@ -30,6 +30,9 @@ component 'libgit2' do |pkg, settings, platform|
      "-DCMAKE_PREFIX_PATH=#{settings[:prefix]} " \
      "-DUSE_SSH=ON " \
      "-DUSE_HTTPS=OpenSSL " \
+     # NTLM needs MD4, which the vendored OpenSSL is built without (legacy algo).
+     # r10k never uses NTLM git auth, so disable the bundled ntlmclient.
+     "-DUSE_NTLMCLIENT=OFF " \
      "-DOPENSSL_ROOT_DIR=#{settings[:prefix]} " \
      "-DBUILD_SHARED_LIBS=ON " \
      "-DBUILD_TESTS=OFF " \
