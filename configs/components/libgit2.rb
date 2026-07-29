@@ -10,6 +10,10 @@ component 'libgit2' do |pkg, settings, platform|
   pkg.load_from_json('configs/components/libgit2.json')
   pkg.mirror "#{settings[:buildsources_url]}/libgit2-#{pkg.get_version}.tar.gz"
 
+  # The GitHub archive tarball (v#{ver}.tar.gz) extracts to libgit2-#{ver}/, but
+  # vanagon derives the source dir from the URL basename (v#{ver}). Correct it.
+  pkg.dirname "libgit2-#{pkg.get_version}"
+
   pkg.build_requires 'cmake'   # OS package; el/debian all ship cmake >= 3.20
   pkg.build_requires 'libssh2'
   pkg.build_requires "openssl-#{settings[:openssl_version]}"

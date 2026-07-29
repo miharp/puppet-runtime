@@ -78,6 +78,7 @@ project 'r10k-runtime' do |proj|
   proj.component 'libyaml'
   proj.component "openssl-#{proj.openssl_version}"
   proj.component 'puppet-ca-bundle'   # faraday/puppet_forge need a CA bundle for HTTPS
+  proj.component 'runtime-r10k'       # gcc runtime shim; every gem build-requires it
   proj.component "ruby-#{proj.ruby_version}"
 
   # The rugged Git provider and its C libraries (NEW components).
