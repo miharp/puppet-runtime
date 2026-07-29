@@ -38,15 +38,21 @@ component 'rubygem-rugged' do |pkg, settings, platform|
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
   # Build-time gate: a rugged without :ssh is worse than no rugged, so fail the
-  # runtime build here rather than shipping a silently broken provider. (Skip on
+  # build here rather than shipping a silently broken provider. (Skip on
   # cross-compiled targets where the just-built ruby can't run on the builder.)
+  #
+  # %q{} keeps #{...} literal so it is evaluated by the inner `ruby -e` at build
+  # time, not interpolated when vanagon loads this component.
   unless platform.is_cross_compiled?
+    ruby_bin = File.join(settings[:ruby_bindir], 'ruby')
+    # Concatenate with + (adjacent %q{} literals parse as modulo). %q keeps the
+    # inner #{...} literal so the build-time ruby -e evaluates them, not vanagon.
+    verify = %q{require "rugged"; f = Rugged.features; } +
+             %q{abort("FATAL: rugged built without :ssh (got #{f.inspect})") unless f.include?(:ssh); } +
+             %q{abort("FATAL: rugged built without :https (got #{f.inspect})") unless f.include?(:https); } +
+             %q{STDERR.puts("rugged #{Rugged::VERSION} features: #{f.inspect}")}
     pkg.install do
-      [%(#{File.join(settings[:ruby_bindir], 'ruby')} -e ) +
-         %('require "rugged"; f=Rugged.features; ) +
-         %(abort("FATAL: rugged built without :ssh (got #{f})") unless f.include?(:ssh); ) +
-         %(abort("FATAL: rugged built without :https (got #{f})") unless f.include?(:https); ) +
-         %(STDERR.puts "rugged #{Rugged::VERSION} features: #{f}"')]
+      ["#{ruby_bin} -e '#{verify}'"]
     end
   end
 end
