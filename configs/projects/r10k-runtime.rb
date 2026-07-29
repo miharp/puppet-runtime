@@ -123,4 +123,10 @@ project 'r10k-runtime' do |proj|
   proj.directory proj.ruby_dir_base_version
   proj.directory proj.rubygems_dir
   proj.directory proj.rubygems_ssl_dir
+
+  # Emit <name>-<version>.<platform>.settings.yaml (+ .sha1) so the consuming
+  # openvox-r10k package can inherit_yaml_settings from it. Without this the
+  # runtime builds but the package can't resolve prefix/bindir/etc. Both
+  # openbolt-runtime and the agent runtimes do the same.
+  proj.publish_yaml_settings
 end
